@@ -115,9 +115,9 @@ Row.propTypes = {
 export default function CollapsibleTable() {
   const [feeData, setFeeData] = React.useState()
   const [minute, setMinute] = React.useState(15)
+  const [token, setToken] = React.useState("USDT")
 
   let rows = [];
-  const token = 'USDT'
   const url = `http://127.0.0.1:8000/${token}/event?minute=${minute}`
 
   React.useEffect(() => {
@@ -133,7 +133,7 @@ export default function CollapsibleTable() {
       })
       .catch(error => console.log('error', error));
 
-  }, [minute])
+  }, [minute, token])
 
   const blockArray = () => {
     let blockArrays = []
@@ -187,38 +187,46 @@ export default function CollapsibleTable() {
     }
   }
 
+  createRows()
   const handleChangeGranularities = (e) => {
     setMinute(parseInt(e.target.value))
   }
-  setTimeout(
-    createRows(), 1000)
 
-  console.log("blockArrays", blockArray().blockArrays);
+  const handleChangeTokens = (e) => {
+    setToken(e.target.value)
+    console.log("token", token);
+  }
   console.log("rows", rows);
+
   return (
     <TableContainer component={Paper}>
       <Table aria-label="collapsible table">
         <TableHead>
           <TableRow>
             <TableCell>
-              <select name="collapsibleTable" id="collapsibleTable" value={minute} onChange={handleChangeGranularities}>
-                <option value="15">15 minute</option>
-                <option value="60">1 hour</option>
-                <option value="240">4 hours</option>
-                <option value="720">12 hours</option>
-              </select>
+              <div>
+                <select name="collapsibleTable" id="collapsibleTable" value={minute} onChange={handleChangeGranularities}>
+                  <option value="15">15 minute</option>
+                  <option value="60">1 hour</option>
+                  <option value="240">4 hours</option>
+                  <option value="720">12 hours</option>
+                </select>
+                <select name="collapsibleTable" id="collapsibleTable" value={token} onChange={handleChangeTokens} style={{marginLeft:"5%"}}>
+                  <option value="USDT">USDT</option>
+                  <option value="USDC">USDC</option>
+                  <option value="BUSD">BUSD</option>
+                  <option value="DAI">DAI</option>
+                </select>
+              </div>
             </TableCell>
             <TableCell align="left">TIME</TableCell>
             <TableCell align="center">FEE</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {/* {rows?.map((row) => (
+          {rows.length > 10 && rows.length < 20 ? rows.map((row) => (
             <Row key={row.index} row={row} />
-          ))} */}
-          {rows.length > 10 ? rows.map((row) => (
-            <Row key={row.index} row={row} />
-          )) : <div style={{padding:"20px"}}>loading...</div>}
+          )) : <div style={{ padding: "20px" }}>loading...</div>}
         </TableBody>
       </Table>
     </TableContainer>
