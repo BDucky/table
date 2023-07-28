@@ -13,6 +13,7 @@ import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import { Padding } from '@mui/icons-material';
 
 function createData(time, fee, events) {
   return {
@@ -68,7 +69,7 @@ function Row(props) {
                       <TableCell>{convertTime(event.timestamp)}</TableCell>
                       <TableCell align="center">{event.args.sender}</TableCell>
                       <TableCell align="center">
-                        {event.args.fromAmount * 0.0001}
+                        {parseFloat(((event.args.toAmount * 0.0001) * 10 ** -18).toFixed(6))}
                       </TableCell>
                     </TableRow>
                   ))}
@@ -112,11 +113,10 @@ Row.propTypes = {
 
 
 export default function CollapsibleTable() {
-  const rows = [];
-
   const [feeData, setFeeData] = React.useState()
   const [minute, setMinute] = React.useState(15)
 
+  let rows = [];
   const token = 'USDT'
   const url = `http://127.0.0.1:8000/${token}/event?minute=${minute}`
 
@@ -132,8 +132,8 @@ export default function CollapsibleTable() {
         setFeeData(JSON.parse(result))
       })
       .catch(error => console.log('error', error));
-  }, [minute])
 
+  }, [minute])
 
   const blockArray = () => {
     let blockArrays = []
@@ -181,16 +181,20 @@ export default function CollapsibleTable() {
     return { "blockArrays": blockArrays, "feeArray": feeArray, "eventArray": eventArray, "timeArray": timeArray }
   }
 
-  blockArray()
-
-  for (let i = 0; i < blockArray().blockArrays?.length; i++) {
-    rows.push(createData(`${convertTime(blockArray().timeArray[i])}`, blockArray().feeArray[i], blockArray().eventArray[i].slice(-5)))
+  const createRows = () => {
+    for (let i = 0; i < blockArray().blockArrays?.length; i++) {
+      rows.push(createData(`${convertTime(blockArray().timeArray[i])}`, parseFloat((blockArray().feeArray[i] * 10 ** -18).toFixed(6)), blockArray().eventArray[i].slice(-5)))
+    }
   }
 
   const handleChangeGranularities = (e) => {
     setMinute(parseInt(e.target.value))
   }
+  setTimeout(
+    createRows(), 1000)
 
+  console.log("blockArrays", blockArray().blockArrays);
+  console.log("rows", rows);
   return (
     <TableContainer component={Paper}>
       <Table aria-label="collapsible table">
@@ -209,9 +213,12 @@ export default function CollapsibleTable() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
+          {/* {rows?.map((row) => (
             <Row key={row.index} row={row} />
-          ))}
+          ))} */}
+          {rows.length > 10 ? rows.map((row) => (
+            <Row key={row.index} row={row} />
+          )) : <div style={{padding:"20px"}}>loading...</div>}
         </TableBody>
       </Table>
     </TableContainer>
