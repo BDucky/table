@@ -211,7 +211,7 @@ export default function CollapsibleTable() {
                   <option value="240">4 hours</option>
                   <option value="720">12 hours</option>
                 </select>
-                <select name="collapsibleTable" id="collapsibleTable" value={token} onChange={handleChangeTokens} style={{marginLeft:"5%"}}>
+                <select name="collapsibleTable" id="collapsibleTable" value={token} onChange={handleChangeTokens} style={{ marginLeft: "5%" }}>
                   <option value="USDT">USDT</option>
                   <option value="USDC">USDC</option>
                   <option value="BUSD">BUSD</option>
@@ -219,8 +219,8 @@ export default function CollapsibleTable() {
                 </select>
               </div>
             </TableCell>
-            <TableCell align="left">TIME</TableCell>
-            <TableCell align="center">FEE</TableCell>
+            <TableCell align="left" style={{ fontWeight: "700", paddingLeft: "70px" }}>TIME</TableCell>
+            <TableCell align="center" style={{ fontWeight: "700" }}>FEE</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
