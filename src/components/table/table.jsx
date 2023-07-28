@@ -134,7 +134,7 @@ export default function CollapsibleTable() {
       })
       .catch(error => console.log('error', error));
 
-    setTimeout(() => { setTokenIsRendered(true) }, 2500)
+    setTimeout(() => { setTokenIsRendered(true) }, 500)
   }, [minute, token])
 
   const blockArray = () => {
@@ -199,7 +199,7 @@ export default function CollapsibleTable() {
     setTokenIsRendered(false)
   }
 
-  console.log(token, blockArray().feeArray, blockArray().timeArray, blockArray().eventArray);
+  console.log(token, feeData);
 
   return (
     <TableContainer component={Paper}>
@@ -227,7 +227,7 @@ export default function CollapsibleTable() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.length > 10 && rows.length < 20 && tokenIsRendered ? rows.map((row) => (
+          {rows.length > 10 && rows.length < 20 && token === feeData.token ? rows.map((row) => (
             <Row key={row.index} row={row} />
           )) : <div style={{ padding: "20px" }}>loading...</div>}
         </TableBody>
