@@ -116,6 +116,7 @@ export default function CollapsibleTable() {
   const [feeData, setFeeData] = React.useState()
   const [minute, setMinute] = React.useState(15)
   const [token, setToken] = React.useState("USDT")
+  const [tokenIsRendered, setTokenIsRendered] = React.useState(true)
 
   let rows = [];
   const url = `http://127.0.0.1:8000/${token}/event?minute=${minute}`
@@ -133,6 +134,7 @@ export default function CollapsibleTable() {
       })
       .catch(error => console.log('error', error));
 
+    setTimeout(() => { setTokenIsRendered(true) }, 2500)
   }, [minute, token])
 
   const blockArray = () => {
@@ -194,9 +196,10 @@ export default function CollapsibleTable() {
 
   const handleChangeTokens = (e) => {
     setToken(e.target.value)
-    console.log("token", token);
+    setTokenIsRendered(false)
   }
-  console.log("rows", rows);
+
+  console.log(token, blockArray().feeArray, blockArray().timeArray, blockArray().eventArray);
 
   return (
     <TableContainer component={Paper}>
@@ -224,7 +227,7 @@ export default function CollapsibleTable() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.length > 10 && rows.length < 20 ? rows.map((row) => (
+          {rows.length > 10 && rows.length < 20 && tokenIsRendered ? rows.map((row) => (
             <Row key={row.index} row={row} />
           )) : <div style={{ padding: "20px" }}>loading...</div>}
         </TableBody>
